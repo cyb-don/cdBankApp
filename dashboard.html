@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard - CD Bank</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        html,
+        body {
+            height: 100%;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(180deg, #f0f3ff 0%, #e8f0ff 40%, #f9f9fb 100%);
+            color: #1f2937;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 28px;
+        }
+
+        .wrap {
+            width: 100%;
+            max-width: 980px;
+            display: grid;
+            grid-template-columns: 1fr 320px;
+            gap: 24px;
+            align-items: start;
+        }
+
+        header.app-header {
+            grid-column: 1 / -1;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 6px;
+        }
+
+        .brand {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .brand h2 {
+            font-size: 20px;
+            color: #111827;
+            font-weight: 700;
+        }
+
+        .brand p {
+            color: #6b7280;
+            font-size: 13px;
+        }
+
+        .card {
+            background: #fff;
+            border-radius: 12px;
+            padding: 20px;
+            box-shadow: 0 10px 30px rgba(15, 23, 42, 0.06);
+        }
+
+        .balance-card {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .balance-label {
+            color: #6b7280;
+            font-size: 13px;
+        }
+
+        #availBalance {
+            display: inline-block;
+            font-size: 28px;
+            font-weight: 700;
+            color: #0f172a;
+        }
+
+        .actions {
+            display: flex;
+            gap: 10px;
+            margin-top: 12px;
+        }
+
+        .actions button {
+            flex: 1;
+            padding: 10px 12px;
+            border-radius: 8px;
+            border: 1px solid #e6e8f0;
+            background: linear-gradient(180deg, #ffffff 0%, #fbfdff 100%);
+            cursor: pointer;
+            font-weight: 600;
+            color: #0f172a;
+            transition: transform 0.12s ease, box-shadow 0.12s ease;
+        }
+
+        .actions button.primary {
+            background: linear-gradient(90deg, #667eea 0%, #764ba2 100%);
+            color: #fff;
+            border: none;
+            box-shadow: 0 8px 20px rgba(118, 75, 162, 0.12);
+        }
+
+        .actions button:hover {
+            transform: translateY(-3px);
+        }
+
+        .right-panel {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+
+        .mini {
+            font-size: 13px;
+            color: #6b7280;
+        }
+
+        .transactions {
+            margin-top: 8px;
+            display: grid;
+            gap: 8px;
+        }
+
+        .tx {
+            display: flex;
+            justify-content: space-between;
+            padding: 10px;
+            border-radius: 8px;
+            background: #fbfbff;
+            border: 1px solid #f1f3ff;
+        }
+
+        @media (max-width: 880px) {
+            .wrap {
+                grid-template-columns: 1fr;
+            }
+
+            header.app-header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 10px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="wrap">
+        <header class="app-header">
+            <div class="brand">
+                <h2>CD Bank</h2>
+                <p>Welcome back, experience vast banking experience</p>
+            </div>
+            <div class="user-controls">
+                <!-- preserved welcome ID so dashboard.js can insert user name -->
+                <h4 id="welcome" class="mini"></h4>
+            </div>
+        </header>
+
+        <section class="card balance-card">
+            <div>
+                <div class="balance-label">Available Balance</div>
+                <div>
+                    <span id="availBalance">&mdash;</span>
+                </div>
+            </div>
+
+            <div class="actions">
+                <button class="primary">New Transfer</button>
+                <button>Deposit</button>
+                <button>Withdraw</button>
+            </div>
+
+            <!-- <div>
+                <p id="transfer">Transfer using
+                    <select name="" id="selectTransferMethod">
+                        <option value="">Choose</option>
+                        <option value="email">Email</option>
+                        <option value="username">Username</option>
+                    </select>
+                </p>
+                <div id="transferInfo">
+                    <p><span id="receiverIdType"></span><input id="receiverId" type="text"></p>
+                    <label for="amount">Amount</label>
+                    <input type="number" disabled>
+                    <label for="remarks">Remarks</label>
+                    <input type="text">
+                </div>
+                <button></button>
+            </div> -->
+
+            <div class="mini" style="margin-top:12px">Account summary and recent activity are shown here.</div>
+        </section>
+
+        <aside class="right-panel">
+            <div class="card">
+                <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;">
+                    <div class="mini">Recent Transactions</div>
+                    <div class="mini">View all</div>
+                </div>
+                <div class="transactions">
+                    <div class="tx">
+                        <div>Opening balance</div>
+                        <div class="mini">+150,000</div>
+                    </div>
+                    <div class="tx">
+                        <div>Sample transaction</div>
+                        <div class="mini">-0.00</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="mini">Quick links</div>
+                <ul style="margin-top:10px;list-style:none;display:grid;gap:8px">
+                    <li><a href="index.html">Log out</a></li>
+                </ul>
+            </div>
+        </aside>
+    </div>
+
+    <script type="module" src="./dashboard.js"></script>
+</body>
+
+</html>

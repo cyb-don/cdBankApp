@@ -1,8 +1,5 @@
-const firstName = document.getElementById("firstName").value;
-const lastName = document.getElementById("lastName").value;
-const username = document.getElementById("username").value;
-const email = document.getElementById("email").value;
-const password = document.getElementById("password").value;
+
+const signUpBtn = document.getElementById("signUpBtn");
 
 
 // Import the functions you need from the SDKs you need
@@ -35,3 +32,53 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 const fireStore = getFirestore(app);
+
+
+
+document.getElementById("form").addEventListener("submit", async function (e) {
+    e.preventDefault();
+    signUpBtn.disabled = true;
+    signUpBtn.innerText = "Signing Up...";
+
+
+    const email = form.email.value;
+    const password = form.password.value;
+    const firstName = form.firstname.value;
+    const lastName = form.lastname.value;
+    const userName = form.username.value;
+    
+
+    try {
+        const userCred = await createUserWithEmailAndPassword(
+            auth,
+            email,
+            password
+        );
+
+        const uid = userCred.user.uid;
+        const acctBalance = 150000;
+
+        await addDoc(collection(fireStore, "users"), {
+            uid,
+            firstName,
+            lastName,
+            userName,
+            email,
+            acctBalance,
+        });
+        alert("Account created successfully!");
+        window.location.href = `dashboard.html?u=${uid}`;
+        
+
+
+
+
+
+    } catch (error) {
+        console.log(error);
+
+    } finally {
+        signUpBtn.disabled = false;
+        signUpBtn.innerText = "Sign Up";
+    }
+});
