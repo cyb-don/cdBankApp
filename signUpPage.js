@@ -16,6 +16,9 @@ import {
     collection,
     getFirestore,
     addDoc,
+    updateDoc,
+    arrayUnion,
+    doc,
 } from "https://www.gstatic.com/firebasejs/12.6.0/firebase-firestore.js";
 
 // Your web app's Firebase configuration
@@ -41,12 +44,12 @@ document.getElementById("form").addEventListener("submit", async function (e) {
     signUpBtn.innerText = "Signing Up...";
 
 
-    const email = form.email.value;
+    const email = form.email.value.toLowerCase();
     const password = form.password.value;
-    const firstName = form.firstname.value;
-    const lastName = form.lastname.value;
+    let firstName = form.firstname.value;
+    let lastName = form.lastname.value;
     const userName = form.username.value;
-    
+
 
     try {
         const userCred = await createUserWithEmailAndPassword(
@@ -58,21 +61,41 @@ document.getElementById("form").addEventListener("submit", async function (e) {
         const uid = userCred.user.uid;
         const acctBalance = 150000;
 
-        await addDoc(collection(fireStore, "users"), {
+
+        firstName = firstName.slice(0,1).toUpperCase() + firstName.slice(1).toLowerCase();
+        lastName = lastName.slice(0,1).toUpperCase() + lastName.slice(1).toLowerCase();
+        const userInfo = await addDoc(collection(fireStore, "users"), {
             uid,
             firstName,
             lastName,
             userName,
             email,
             acctBalance,
+            "transactions": [],
+            "userDocId": "",
         });
         alert("Account created successfully!");
-        window.location.href = `dashboard.html?u=${uid}`;
-        
-
-
-
-
+        const userID = userInfo.id;
+        console.log(userID);
+        const userDoc = await doc(fireStore, "users", userID)
+        let date = new Date()
+        const day = date.getDate();
+        const month = date.getMonth() + 1;
+        const year = date.getFullYear();
+        const hour = date.getHours();
+        const minute = date.getMinutes();
+        date = `${day}-${month}-${year}  ${hour}:${minute}`;
+        await updateDoc(userDoc, {
+            userDocId: userID,
+            transactions: arrayUnion({
+                transactType: "Cr",
+                transactAmt: 150000,
+                transactFullName: "Opening Balance",
+                transactDate: date,
+                Description: "Opening Balance"
+            })
+        });
+        window.location.href = `dashboard.html?u=${userID}`; 
 
     } catch (error) {
         console.log(error);
