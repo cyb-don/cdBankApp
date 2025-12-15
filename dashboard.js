@@ -14,6 +14,12 @@ import {
     arrayUnion,
 } from "https://www.gstatic.com/firebasejs/12.6.0/firebase-firestore.js";
 
+import {
+        getAuth,
+        onAuthStateChanged,
+        signOut,
+      } from "https://www.gstatic.com/firebasejs/12.6.0/firebase-auth.js";
+
 // Your web app's Firebase configuration
 const firebaseConfig = {
     apiKey: "AIzaSyAtVgwPus-YVW80vzD8tHqM8Z7c2dlTloI",
@@ -26,6 +32,9 @@ const firebaseConfig = {
 
 // Initialize Firebase
 const app = initializeApp(firebaseConfig);
+
+// Auth
+const auth = getAuth(app);
 
 // Initialize Firestore
 const fireStore = getFirestore(app);
@@ -52,7 +61,7 @@ getUser()
 function userData(user) {
     // const greetName = user.firstName.slice(0, 1).toUpperCase() + user.firstName.slice(1);
     document.getElementById("welcome").innerText = `Hello, ${user.firstName}!`;
-    document.getElementById("availBalance").innerText = `#${user.acctBalance}`;
+    document.getElementById("availBalance").innerText = `₦${user.acctBalance}`;
     spreadTransactions(user.transactions)
 
 };
@@ -61,19 +70,35 @@ function spreadTransactions(transactions) {
     transactions.forEach((transaction) => {
         document.querySelector(`.transactions`).innerHTML += `
         <div>
-            <div>${transaction.transactType}</div>
+            <div><span class="drcr">${transaction.transactType}</span></div>
             <div>
                 <p>${transaction.transactFullName}</p>
                 <p>${transaction.transactDate}</p>
             </div>
             <div>
                 <p>${transaction.transactAmt}</p>
-                <p>Successful</p>
+                <p class="success">Successful</p>
             </div>
         </div>      
         `;
     })
-}
+};
+
+
+let transferPanelOpen = false;
+
+const transferSection = document.getElementById(`transferSection`);
+const newTransfer = document.querySelector(`.newTransfer`);
+newTransfer.addEventListener(`click`, function () {
+    if (transferPanelOpen) {
+        transferSection.style.display = `none`;
+    } else {
+        transferSection.style.display = `block`;
+    };
+
+    transferPanelOpen = !transferPanelOpen;
+    
+})
 
 
 const selectTransferMethod = document.getElementById(`selectTransferMethod`);
@@ -161,14 +186,15 @@ async function theFoundUser(foundUser) {
 
     const recipientDoc = doc(fireStore, "users", foundUser.userDocId);
     const getSenderDoc = await getDoc(userDoc);
-    const SenderDoc = getSenderDoc.data();
-    
+    const senderDoc = getSenderDoc.data();
+
     const transferAmount = document.getElementById(`transferAmount`);
     const transferRemark = document.getElementById(`transferRemark`);
 
     document.getElementById(`transferBtn`).addEventListener("click", async function () {
         const makeTransfer = confirm(`Make a transfer of ₦${transferAmount.value} to ${foundUser.firstName}  ${foundUser.lastName}`);
         if (makeTransfer) {
+            alert(`Transfer Successful!!`);
             let date = new Date()
             const day = date.getDate();
             const month = date.getMonth() + 1;
@@ -176,18 +202,60 @@ async function theFoundUser(foundUser) {
             const hour = date.getHours();
             const minute = date.getMinutes();
             date = `${day}-${month}-${year}  ${hour}:${minute}`;
+
             await updateDoc(recipientDoc, {
+                acctBalance: Number(foundUser.acctBalance) + Number(transferAmount.value),
                 transactions: arrayUnion({
                     transactType: "Cr",
-                    transactAmt: transferAmount.value,
-                    transactFullName: `From ${SenderDoc.firstName}  ${SenderDoc.lastName}`,
+                    transactAmt: `+₦${transferAmount.value}`,
+                    transactFullName: `From ${senderDoc.firstName}  ${senderDoc.lastName}`,
                     transactDate: date,
-                    Description: transferRemark.value
+                    Description: transferRemark.value,
                 })
-            })
+            });
+
+            await updateDoc(userDoc, {
+                acctBalance: Number(senderDoc.acctBalance) - Number(transferAmount.value),
+                transactions: arrayUnion({
+                    transactType: "Dr",
+                    transactAmt: `-₦${transferAmount.value}`,
+                    transactFullName: `To ${foundUser.firstName}  ${foundUser.lastName}`,
+                    transactDate: date,
+                    Description: transferRemark.value,
+                })
+            });
+
+            
+            const transferSection = document.getElementById(`transferSection`);
+            transferSection.style.display = `none`;
+            window.location.reload();
         }
     });
 
-}
+};
 
 
+ onAuthStateChanged(auth, (user) => {
+        if (user) {
+          // User is signed in, see docs for a list of available properties
+          // https://firebase.google.com/docs/reference/js/auth.user
+          // ...
+        } else {
+          // User is signed out
+          window.location.href = "./index.html";
+        }
+      });
+
+
+
+document.getElementById(`logoutBtn`).addEventListener("click", async () => {
+        const confirmLogout = confirm("Are you sure you want to logout?");
+        if (!confirmLogout) return;
+        try {
+          await signOut(auth);
+          alert("Logged out successfully");
+          window.location.href = "./index.html";
+        } catch (error) {
+          console.log("Error logging out:", error);
+        }
+      });

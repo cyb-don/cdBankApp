@@ -112,7 +112,7 @@
             <p>Enter your information to log into your account.</p>
         </div>
 
-        <form action="" method="post" autocomplete="on">
+        <form action="" id="loginForm">
             <div class="form-group">
                 <label for="email">Email</label>
                 <input id="email" name="email" type="email" placeholder="cdbank@mail.com" required autocomplete="email">
@@ -123,12 +123,16 @@
                 <input id="password" name="password" type="password" placeholder="Enter your password" required autocomplete="current-password">
             </div>
 
-            <button class="btn" type="submit">Log In</button>
+            <button class="btn" id="loginBtn" type="submit">Log In</button>
         </form>
 
         <div class="footer">
             Don't have an account? <a href="signUpPage.html">Sign up</a>
         </div>
     </main>
+
+
+
+    <script type="module" src="./loginPage.js"></script>
 </body>
 </html>

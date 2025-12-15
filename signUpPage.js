@@ -89,7 +89,7 @@ document.getElementById("form").addEventListener("submit", async function (e) {
             userDocId: userID,
             transactions: arrayUnion({
                 transactType: "Cr",
-                transactAmt: 150000,
+                transactAmt: `+₦150000`,
                 transactFullName: "Opening Balance",
                 transactDate: date,
                 Description: "Opening Balance"
