@@ -73,14 +73,9 @@ No real money transactions are involved.
 ## 📌 Future Improvements
 
 - Role-based access (admin/user)
-- Transaction timestamps & filtering
 - Better UI/UX
 - Server-side validation using Cloud Functions
 
----
-
-## 📷 Screenshots
-(Add screenshots here)
 
 ---
 
