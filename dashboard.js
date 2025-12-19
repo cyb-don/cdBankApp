@@ -15,10 +15,10 @@ import {
 } from "https://www.gstatic.com/firebasejs/12.6.0/firebase-firestore.js";
 
 import {
-        getAuth,
-        onAuthStateChanged,
-        signOut,
-      } from "https://www.gstatic.com/firebasejs/12.6.0/firebase-auth.js";
+    getAuth,
+    onAuthStateChanged,
+    signOut,
+} from "https://www.gstatic.com/firebasejs/12.6.0/firebase-auth.js";
 
 // Your web app's Firebase configuration
 const firebaseConfig = {
@@ -97,7 +97,7 @@ newTransfer.addEventListener(`click`, function () {
     };
 
     transferPanelOpen = !transferPanelOpen;
-    
+
 })
 
 
@@ -206,6 +206,12 @@ async function theFoundUser(foundUser) {
     });
 
     transferBtn.addEventListener("click", async function () {
+        if (transferAmount.value.trim() === "") {
+            insufficient.innerText = "Please enter an amount";
+            transferAmount.focus();
+            return;
+        }
+        
         const makeTransfer = confirm(`Make a transfer of ₦${transferAmount.value} to ${foundUser.firstName}  ${foundUser.lastName}`);
         if (makeTransfer) {
             alert(`Transfer Successful!!`);
@@ -239,7 +245,7 @@ async function theFoundUser(foundUser) {
                 })
             });
 
-            
+
             const transferSection = document.getElementById(`transferSection`);
             transferSection.style.display = `none`;
             window.location.reload();
@@ -249,27 +255,27 @@ async function theFoundUser(foundUser) {
 };
 
 
- onAuthStateChanged(auth, (user) => {
-        if (user) {
-          // User is signed in, see docs for a list of available properties
-          // https://firebase.google.com/docs/reference/js/auth.user
-          // ...
-        } else {
-          // User is signed out
-          window.location.href = "./index.html";
-        }
-      });
+onAuthStateChanged(auth, (user) => {
+    if (user) {
+        // User is signed in, see docs for a list of available properties
+        // https://firebase.google.com/docs/reference/js/auth.user
+        // ...
+    } else {
+        // User is signed out
+        window.location.href = "./index.html";
+    }
+});
 
 
 
 document.getElementById(`logoutBtn`).addEventListener("click", async () => {
-        const confirmLogout = confirm("Are you sure you want to logout?");
-        if (!confirmLogout) return;
-        try {
-          await signOut(auth);
-          alert("Logged out successfully");
-          window.location.href = "./index.html";
-        } catch (error) {
-          console.log("Error logging out:", error);
-        }
-      });
+    const confirmLogout = confirm("Are you sure you want to logout?");
+    if (!confirmLogout) return;
+    try {
+        await signOut(auth);
+        alert("Logged out successfully");
+        window.location.href = "./index.html";
+    } catch (error) {
+        console.log("Error logging out:", error);
+    }
+});
