@@ -211,7 +211,7 @@ async function theFoundUser(foundUser) {
             transferAmount.focus();
             return;
         }
-        
+
         const makeTransfer = confirm(`Make a transfer of ₦${transferAmount.value} to ${foundUser.firstName}  ${foundUser.lastName}`);
         if (makeTransfer) {
             alert(`Transfer Successful!!`);
@@ -224,7 +224,7 @@ async function theFoundUser(foundUser) {
             date = `${day}-${month}-${year}  ${hour}:${minute}`;
 
             await updateDoc(recipientDoc, {
-                acctBalance: Number(foundUser.acctBalance) + Number(transferAmount.value),
+                acctBalance: Number(foundUser.acctBalance) + Number(transferAmount.value.trim()),
                 transactions: arrayUnion({
                     transactType: "Cr",
                     transactAmt: `+₦${transferAmount.value}`,
@@ -235,7 +235,7 @@ async function theFoundUser(foundUser) {
             });
 
             await updateDoc(userDoc, {
-                acctBalance: Number(senderDoc.acctBalance) - Number(transferAmount.value),
+                acctBalance: Number(senderDoc.acctBalance) - Number(transferAmount.value.trim()),
                 transactions: arrayUnion({
                     transactType: "Dr",
                     transactAmt: `-₦${transferAmount.value}`,
