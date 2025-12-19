@@ -190,8 +190,22 @@ async function theFoundUser(foundUser) {
 
     const transferAmount = document.getElementById(`transferAmount`);
     const transferRemark = document.getElementById(`transferRemark`);
+    const insufficient = document.getElementById(`insufficient`);
+    const transferBtn = document.getElementById(`transferBtn`);
 
-    document.getElementById(`transferBtn`).addEventListener("click", async function () {
+
+    transferAmount.addEventListener(`input`, async function () {
+        if (senderDoc.acctBalance < transferAmount.value) {
+            insufficient.innerText = `Insufficient balance`;
+            transferBtn.disabled = true;
+        } else {
+            insufficient.innerText = ``;
+            transferBtn.disabled = false;
+        }
+        return;
+    });
+
+    transferBtn.addEventListener("click", async function () {
         const makeTransfer = confirm(`Make a transfer of ₦${transferAmount.value} to ${foundUser.firstName}  ${foundUser.lastName}`);
         if (makeTransfer) {
             alert(`Transfer Successful!!`);
