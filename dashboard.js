@@ -194,7 +194,7 @@ async function theFoundUser(foundUser) {
     const transferBtn = document.getElementById(`transferBtn`);
 
 
-    transferAmount.addEventListener(`input`, async function () {
+    /* transferAmount.addEventListener(`input`, async function () {
         if (senderDoc.acctBalance < transferAmount.value) {
             insufficient.innerText = `Insufficient balance`;
             transferBtn.disabled = true;
@@ -203,7 +203,7 @@ async function theFoundUser(foundUser) {
             transferBtn.disabled = false;
         }
         return;
-    });
+    }); */
 
     transferBtn.addEventListener("click", async function () {
         if (transferAmount.value.trim() === "") {
