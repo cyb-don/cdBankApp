@@ -60,8 +60,8 @@ getUser()
 
 function userData(user) {
     // const greetName = user.firstName.slice(0, 1).toUpperCase() + user.firstName.slice(1);
-    document.getElementById("welcome").innerText = `Hello, €{user.firstName}!`;
-    document.getElementById("availBalance").innerText = `₦${user.acctBalance}`;
+    document.getElementById("welcome").innerText = `Hello, {user.firstName}!`;
+    document.getElementById("availBalance").innerText = `€${user.acctBalance}`;
     spreadTransactions(user.transactions)
 
 };
